@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticketting-orders-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ticketting-orders
+  template:
+    metadata:
+      labels:
+        app: ticketting-orders
+    spec:
+      containers:
+        - name: ticketting-orders
+          image: mydevlab:5000/ticketting-orders
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL 
+              value: 'http://ticketting-nats-service:4222'
+            - name: NATS_CLUSTER_ID
+              value: 'ticketting'
+            - name: MONGO_URI
+              value: 'mongodb://ticketting-mongo-orders-service:27017/orders'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: ticketting-orders-service
+spec:
+  selector:
+    app: ticketting-orders
+  ports:
+    - name: ticketting-orders
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

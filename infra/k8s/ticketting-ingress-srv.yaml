@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ticketting-ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - host: ticketting.mylab.local
+      http:
+        paths:
+          - path: /api/payments/?(.*)
+            backend:
+              serviceName: ticketting-payments-service
+              servicePort: 3000          
+          - path: /api/users/?(.*)
+            backend:
+              serviceName: ticketting-auth-service
+              servicePort: 3000
+          - path: /api/tickets/?(.*)
+            backend:
+              serviceName: ticketting-ticketts-service
+              servicePort: 3000
+          - path: /api/orders/?(.*)
+            backend:
+              serviceName: ticketting-orders-service
+              servicePort: 3000
+          - path: /?(.*)
+            backend:
+              serviceName: ticketting-client-service
+              servicePort: 3000

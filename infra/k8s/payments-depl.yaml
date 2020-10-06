@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticketting-paymentss-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ticketting-payments
+  template:
+    metadata:
+      labels:
+        app: ticketting-payments
+    spec:
+      containers:
+        - name: ticketting-payments
+          image: mydevlab:5000/ticketting-payments
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL 
+              value: 'http://ticketting-nats-service:4222'
+            - name: NATS_CLUSTER_ID
+              value: 'ticketting'
+            - name: MONGO_URI
+              value: 'mongodb://ticketting-mongo-payments-service:27017/payments'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: ticketting-payments-service
+spec:
+  selector:
+    app: ticketting-payments
+  ports:
+    - name: ticketting-payments
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

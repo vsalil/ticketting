@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticketting-auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ticketting-auth
+  template:
+    metadata:
+      labels:
+        app: ticketting-auth
+    spec:
+      containers:
+        - name: ticketting-auth
+          image: mydevlab:5000/ticketting-auth
+          env:
+            - name: MONGO_URI
+              value: 'mongodb://ticketting-mongo-auth-service:27017/auth'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: ticketting-auth-service
+spec:
+  selector:
+    app: ticketting-auth
+  ports:
+    - name: ticketting-auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
