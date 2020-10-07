@@ -6,6 +6,8 @@ import { TicketUpdatedListener } from './events/listeners/ticket-updated-listene
 import { ExpirationCompletedListener } from './events/listeners/expiration-completed-listener';
 
 const start = async () => {
+    console.log("Order Service is starting up ...");
+    
     if(!process.env.JWT_KEY){
 
         throw new Error(' Secret JWT_KEY must be defined');

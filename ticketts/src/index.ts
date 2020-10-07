@@ -5,6 +5,7 @@ import { OrderCreatedListener} from './events/listeners/order_created_listeners'
 import { OrderCancelledListener} from './events/listeners/order_cancelled_listener';
 
 const start = async () => {
+    console.log("Ticketing Service is starting up ...");
     if(!process.env.JWT_KEY){
 
         throw new Error(' Secret JWT_KEY must be defined');
