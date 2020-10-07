@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { app } from './app';
 
 const start = async () => {
+    console.log("Starting up auth service ...");
     if(!process.env.JWT_KEY){
 
         throw new Error('Secret JWT_KEY must be defined');
