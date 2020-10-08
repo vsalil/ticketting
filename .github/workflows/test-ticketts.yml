@@ -4,7 +4,9 @@
 name: test-ticketts
 
 on:
-   pull_request
+   pull_request:
+     paths:
+       - 'ticketts/**'
    
 jobs:
   build:
